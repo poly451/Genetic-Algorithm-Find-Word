@@ -1,5 +1,4 @@
 from random import randint
-import random
 import sys
 """
 =======================================================
@@ -110,13 +109,6 @@ class Myitem:
         # print("mutate: after: {}".format(self.DNA))
 
     # -----------------------------------------------------
-
-    def am_I_chosen(self, highest_fitness_score):
-        # This is the fitness function IF you're using rejection sampling.
-        myran = randint(1, highest_fitness_score)
-        if myran <= self.fitness_score:
-            self.chosen = True
-        # print("myran: {}, score: {}, chosen: {}".format(myran, self.score, self.chosen))
 
     def debug_print(self):
         print("id: {}, chosen: {}, standardized_score: {:.6}, fitness_score: {}, DNA: {}".format(self.id,
@@ -281,72 +273,7 @@ class Mypopulation:
             if critter.DNA == self.target:
                 return True
         return False
-
-    def remove_critter(self, critters, critter):
-        remaining_critters = []
-        item_removed = False
-        for being in critters:
-            if being.DNA == critter.DNA:
-                if item_removed == False:
-                    pass
-                else:
-                    remaining_critters.append(being)
-                item_removed = True
-            else:
-                remaining_critters.append(being)
-        if len(critters) != len(remaining_critters) + 1:
-            sys.exit("Error in Mypopulation.remove_critter. len(critters: {}, len(remaining_critters: {}".format(len(critters),
-                                                                                                                len(remaining_critters)))
-        return remaining_critters
-
-    def make_a_child(self, parent1, parent2):
-        # crossover and mutation
-        self.item_id += 1
-        child = Myitem(len(self.target), self.item_id)
-        myran = randint(0, len(parent1.DNA)-1)
-        child.DNA = parent1.DNA[0:myran]
-        child.DNA = "{}{}".format(child.DNA, parent2.DNA[myran:])
-        # print("parent1:")
-        # parent1.debug_print()
-        # print("parent2:")
-        # parent2.debug_print()
-        # print("child:")
-        # child.debug_print()
-        return child
-
-    def breed_parents(self, parents):
-        children = []
-        besafe = 0
-        while (len(parents) > 1) and (besafe < 10000):
-            ran1 = randint(0, len(parents)-1)
-            parent1 = parents[ran1]
-            parents = self.remove_critter(parents, parent1)
-            ran2 = randint(0, len(parents)-1)
-            parent2 = parents[ran2]
-            parents = self.remove_critter(parents, parent2)
-            besafe += 1
-            child1 = self.make_a_child(parent1, parent2)
-            child2 = self.make_a_child(parent2, parent1)
-            children.append(child1)
-            children.append(child2)
-        return children
-
-    def not_fit_enough(self):
-        # Take out of the population all those with a
-        # standardized score (when rounded) of 0
-        for critter in self.population:
-            if round(critter.standardized_score) <= 0.0001:
-                # This is misleading. We're turning "chosen" to "True"
-                # because we don't want them to be picked.
-                critter.chosen = True
-
-    def still_need_to_reproduce(self, breeding_pool):
-        looking_for_love = []
-        for critter in breeding_pool:
-            if critter.chosen == False:
-                looking_for_love.append(critter)
-        return looking_for_love
-
+    
     # ----------------------------------------------------
     #               crossover_and_mutation
     # ----------------------------------------------------
@@ -403,11 +330,19 @@ class Mypopulation:
 
     # =========== Main Procedures =================
 
+    # ----------------------------------------------------
+    #               evaluate_population
+    # ----------------------------------------------------
+
     def evaluate_population(self, offset):
         self.calculate_fitness_scores_for_each_critter()
         self.total_fitness = self.calculate_total_fitness()
         self.average_fitness = self.calculate_average_fitness()
         self.calculate_standardized_scores(self.total_fitness, offset)
+
+    # ----------------------------------------------------
+    #               breed_population
+    # ----------------------------------------------------
 
     def breed_population(self, multiplication_factor):
         # Figure out how many copies of each critter will
@@ -436,6 +371,10 @@ class Mypopulation:
         return breeding_pool
         # print("Children:")
         # [i.debug_print() for i in children]
+
+    # ----------------------------------------------------
+    #               debug printing
+    # ----------------------------------------------------
 
     def debug_population_DNA(self):
         mystring = ""
