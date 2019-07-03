@@ -1,0 +1,15 @@
+CRITTER_START_X = 6
+CRITTER_START_Y = 7
+TILES_WIDE = 10
+FOOD_START_X = 2
+FOOD_START_Y = 5
+CRITTER_SIZE = 20
+FOOD_SIZE = 20
+# MAX_GENERATIONS = 6
+# MAX_STEPS = 4
+# FILE_INPUT = "exp02.txt"
+# FILE_INPUT = "testing_generations01.txt"
+# FILE_OUTPUT = "brains_doodling_2019_6_24__56_42_544772.txt"
+# SAVE_EXPERIMENTAL_OUTPUT = "testing_generations01_output.txt"
+# NEW_OUTPUT = "new_version.txt"
+BOARDSIZE = TILES_WIDE * CRITTER_SIZE
